@@ -4161,9 +4161,26 @@ round_think()
 	level.dog_health = 1600;
 	level.dog_round_count = 5;
 	level.game_started = 1;
-	level.next_dog_round = 666;
-	level.next_monkey_round = 666;
-	level.next_doc_round = 666;
+
+	if (level.script == "zombie_pentagon")
+	{
+		flag_wait( "power_on" );
+	}
+
+	if ( getDvar( "next_special_round") == "")
+	{
+		level.next_dog_round = 666;
+		level.next_monkey_round = 666;
+		level.next_thief_round = 666;
+	}
+	else
+	{
+		level.next_dog_round = getDvarInt( "next_special_round");
+		level.next_monkey_round = getDvarInt( "next_special_round");
+		level.next_thief_round = getDvarInt( "next_special_round");
+	}
+
+	level.prev_thief_round = level.next_thief_round;	
 
 	for( ;; )
 	{
@@ -7122,16 +7139,15 @@ turn_on_power()
 
 				trig = getent("use_elec_switch","targetname");
 				trig notify( "trigger" );
-
-				wait ( 5 );
-				level.next_thief_round = 1;
-
+				flag_set( "power_on" );
 			}	
 			else if ( level.script == "zombie_cosmodrome" )
 			{
 
 				trig = getent( "use_elec_switch" , "targetname" );
 				trig notify( "trigger" );
+				flag_set( "power_on" );
+				flag_set( "perk_bought" );
 
 				// open up pack a punch
 				upper_door_model = GetEnt( "rocket_room_top_door", "targetname" );
